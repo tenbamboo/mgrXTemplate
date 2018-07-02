@@ -1,0 +1,76 @@
+//色值
+
+// $mainColor:#525ca3;//【赛诺菲蓝】
+// $secColor:#bcbc1c; //【赛诺菲绿】
+// $thirdColor:#caae7a;// 【赛诺菲黄】
+// $borderColor:#d9d9d9; //【浅灰】
+// $mainFontColor:#000; //【黑色】
+// $secFontColor:#666666; //【中灰】
+//#525ca3 【赛诺菲蓝】
+//#bcbc1c 【赛诺菲绿】
+//#caae7a 【赛诺菲黄】
+//#666666 【中灰】
+//#d9d9d9 【浅灰】
+// ::-webkit-scrollbar{
+//   width: 0;
+// }
+//a:active{
+//  background: $borderColor;
+//}
+
+//定位上下左右居中
+@mixin center{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+//上下居中
+@mixin topcenter{
+  position: absolute;
+  top:50%;
+  transform:translateY(-50%);
+}
+//左右居中
+@mixin leftcenter{
+  position: absolute;
+  left:50%;
+  transform:translateX(-50%);
+}
+//flex布局
+@mixin justify($value:space-between){
+  display: flex;
+  justify-content: $value;
+}
+
+//上下居中
+@mixin align($type:center){
+  display: flex;
+  align-items: center;
+}
+
+//字体大小，颜色
+@mixin sizeColor($size, $color){
+  font-size: $size;
+  color: $color;
+}
+//字体大小、行高、字体
+@mixin fontStyle($size, $line-height, $family: 'Microsoft YaHei'){
+  font:#{$size}/#{$line-height} $family;
+}
+//宽高
+@mixin widthHeight($width,$height){
+  width: $width;
+  height: $height;
+}
+
+@mixin bg($url){
+  background-image: url($url);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+//转换px方法
+// $browser-default-font-size: 75px !default;
+// @function pxTorem($px){//$px为需要转换的字号
+//   @return $px / $browser-default-font-size * 1rem;
+// }
