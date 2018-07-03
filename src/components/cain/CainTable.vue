@@ -2,6 +2,7 @@
   <div class="cainTableWrap">
 
     <el-table
+    ref="rootCainTable"
     :data="resData"
     :default-sort="{prop:orderItemProxy, order:orderTypeProxy}"
     :highlight-current-row ="isRadio"
@@ -59,12 +60,13 @@
   </div>
 </template>
 <script>
-// version 1.1.4
+// version 1.1.5
 // createDate 2017-10-10
 // updateDate 2017-12-15  1.1.1
 // updateDate 2018-04-25  1.1.2 增加sendJson字段，用于兼容不同请求方式
 // updateDate 2018-04-26  1.1.3 增加success回调事件
 // udpateDate 2018-04-26  1.1.4 增加setProps方法
+// updateDate 2018-06-28  1.1.5 增加setCheckedData 和setCheckedDataByIndex
 
 // 各种方法
 // reload(data) 重新请求数据，data为搜索参数
@@ -73,6 +75,8 @@
 // setTableData(data) 手动设置数据,建议关闭pager（isHidePager = true）
 // exportTable(searchData) 导出数据 入参1->搜索数据
 // setProps(data) 设置属性
+// setCheckedData 设置选取的数据（传数组或对象都可，不是下标哦）
+// setCheckedDataByIndex 通过下标设置选取的数据
 
 // emit 事件
 // 选取改变 @selectChange 返回选取的数组
@@ -191,6 +195,28 @@ export default {
     getCheckedData () {
       return this.selectedItems
     },
+    // 设置选取的数据（传数组或对象都可，不是下标哦）
+    setCheckedData (obj) {
+      let array = obj
+      if (!Array.isArray(obj)) {
+        array = [obj]
+      }
+      // let list = this.getTableData()
+      for (let item of array) {
+        this.$refs.rootCainTable.toggleRowSelection(item, true)
+      }
+    },
+    // 通过下标设置选取数据
+    setCheckedDataByIndex (obj) {
+      let array = obj
+      if (!Array.isArray(obj)) {
+        array = [obj]
+      }
+      let list = this.getTableData()
+      for (let item of array) {
+        this.$refs.rootCainTable.toggleRowSelection(list[item], true)
+      }
+    },
     exportTable (searchData) {
       if (!this.exportUrl) {
         alert('导出Url为空!!!')
@@ -266,20 +292,20 @@ export default {
       }
       let p = this.$_.cloneDeep(this.searchDataProxy) || {}
       // this.formartSearchData(p)
-      p.orderField = this.orderItemProxy || ''
-      p.orderItem = this._tableGetOrderType()
-      p.pageNo = this.pageNo * this.pageSize
-      p.pageSize = this.pageSize
+      p.oi = this.orderItemProxy || ''
+      p.ot = this._tableGetOrderType()
+      p.pb = this.pageNo * this.pageSize
+      p.ps = this.pageSize
       let res = ''
 
-      // if (this.sendJson) {
-      res = await this.$http.post(this.url, p)
-      // } else {
-      //   res = await this.$http.post(this.url, p)
-      // }
+      if (this.sendJson) {
+        res = await this.$httpJson.post(this.url, p)
+      } else {
+        res = await this.$http.post(this.url, p)
+      }
       this.rejcetRunFlag = true
-      this.resData = res.data.result.results
-      this.pageTotal = res.data.result.totalRecord
+      this.resData = res.data.l
+      this.pageTotal = res.data.c
       this.$emit('success', res.data)
     },
     // 私有：格式化排序字段
